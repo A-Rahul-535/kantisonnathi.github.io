@@ -1,0 +1,221 @@
+/* Logic Homework 3, Part 1 */
+/* Team Number: 19 */
+/* Team Members:
+1. <Sahiti Annadi> <ID 2019A7PS1208H>
+2. <Kanti Sonnati> <ID 2019A7PS1209H>
+3. <Shreya Guda> <ID 2019A7PS1202H>
+4. <A Rahul> <ID 2019A7PS1312H>
+*/
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100 // macro indicating the maximum size of stack
+
+/***************************************************************/
+/********************stack operations***************************/
+
+// Inserting data onto top of stack. Takes as arguments the data to be pushed, the array used for
+//implementing the stack and an integer pointer referencing the index of the top of that stack.
+
+void push(char data, char stack[], int *top)
+{
+   if(*top != MAX-1) // if stack is not full
+   {  *top = *top + 1;
+      stack[*top] = data;
+   }
+   else
+   {
+      printf("Could not insert data, Stack is full.\n");
+   }
+}
+
+
+// Removing element from top of stack. Takes as arguments the array used for implementing the stack
+//and an integer pointer referencing the index of the top of that stack. Returns the popped character.
+
+char pop(char stack[], int *top)
+{
+   char data;
+
+   if(*top != -1) //checking whether stack contains some elements
+   {
+      data = stack[*top];
+      *top = *top - 1;
+      return data;
+   }
+
+   else
+   {
+      printf("Could not retrieve data, Stack is empty.\n");
+   }
+}
+
+// NOTE:
+// A pointer to the variable top is passed instead of passing the top variable itself.
+//This is done to ensure top is passed as reference and any modifications to the top variable
+// would be reflected in the calling function
+
+/***************************************************************/
+/********************* implementation **************************/
+
+// function to implement the solution for Part 1. Takes as arguments the number of atoms,
+//the character array to store the completely parenthesized input formula and the array to store the valuation of the atoms
+// returns the final result of evaluating the formula (either T or F)
+
+char eval_formula(int n, char formula[], char operand_val[])
+{
+   char operand_stack[MAX];  // character array to implement operand stack
+   char operator_stack[MAX]; // character array to implement operator stack
+   int operand_top = -1; // integer pointing to the top of the operand stack
+   int operator_top = -1;  // integer pointing to the top of the operand stack
+
+   // Complete the implementation function to calculate the final valuation of the formula
+
+   for(int i=0;i<strlen(formula);i++)
+   {
+       if(formula[i]=='1')
+        formula[i]=operand_val[0];
+       
+       if(formula[i]=='2')
+        formula[i]=operand_val[1];
+        
+       if(formula[i]=='3')
+        formula[i]=operand_val[2];
+        
+       if(formula[i]=='4')
+        formula[i]=operand_val[3];
+        
+       if(formula[i]=='5')
+        formula[i]=operand_val[4];
+        
+       if(formula[i]=='6')
+        formula[i]=operand_val[5];
+        
+       if(formula[i]=='7')
+        formula[i]=operand_val[6];
+        
+       if(formula[i]=='8')
+        formula[i]=operand_val[7];
+        
+       if(formula[i]=='9')
+        formula[i]=operand_val[8];
+   }
+   
+   printf("Equivalent formula is: ");
+   printf("%s\n",formula);
+
+   for(int i=0;i<strlen(formula);i++)
+   {
+       char a,b,t;
+       
+       
+       
+       if(formula[i]=='(')
+        push('(',operator_stack,&operator_top);
+
+       else if(formula[i]=='T')
+        push('T',operand_stack,&operand_top);
+
+       else if(formula[i]=='F')
+        push('F',operand_stack,&operand_top);
+
+       else if(formula[i]=='~')
+        push('~',operator_stack,&operator_top);
+
+       else if(formula[i]=='^')
+        push('^',operator_stack,&operator_top);
+
+       else if(formula[i]=='V')
+        push('V',operator_stack,&operator_top);
+
+       else if(formula[i]=='>')
+        push('>',operator_stack,&operator_top);
+
+       else if(formula[i]==')')
+       {
+           if(operator_stack[operator_top]=='^')
+           {
+               a=pop(operand_stack,&operand_top);
+               b=pop(operand_stack,&operand_top);
+               if(a=='T' && b=='T')
+                a='T';
+               else
+                a='F';
+               push(a,operand_stack,&operand_top);
+               t=pop(operator_stack,&operator_top);
+               t=pop(operator_stack,&operator_top);
+           }
+
+           else if(operator_stack[operator_top]=='V')
+           {
+               a=pop(operand_stack,&operand_top);
+               b=pop(operand_stack,&operand_top);
+               if(a=='F' && b=='F')
+                a='F';
+               else
+                a='T';
+               push(a,operand_stack,&operand_top);
+               t=pop(operator_stack,&operator_top);
+               t=pop(operator_stack,&operator_top);
+           }
+
+           else if(operator_stack[operator_top]=='>')
+           {
+               a=pop(operand_stack,&operand_top);
+               b=pop(operand_stack,&operand_top);
+               if(a=='F' && b=='T')
+                a='F';
+               else
+                a='T';
+               push(a,operand_stack,&operand_top);
+               t=pop(operator_stack,&operator_top);
+               t=pop(operator_stack,&operator_top);
+           }
+
+           else if(operator_stack[operator_top]=='~')
+           {
+               a=pop(operand_stack,&operand_top);
+               if(a=='T')
+                a='F';
+               else
+                a='T';
+               push(a,operand_stack,&operand_top);
+               t=pop(operator_stack,&operator_top);
+               t=pop(operator_stack,&operator_top);
+           }
+       }
+   }
+   
+       char ans;
+       ans = operand_stack[0];
+       return ans;
+}
+
+/***************************************************************/
+/***********************main function***************************/
+
+int main()
+{
+   int n; // number of operands
+   char formula[MAX]; // character array to store the input formula
+   char operand_val[10]; // array to store the valuation of operands (either T or F)
+
+   // Complete the main function to get the inputs and call the implementation function
+
+   printf("Enter the number of operands: ");
+   scanf("%d",&n);
+
+   printf("Enter the input formula(without spaces in between): ");
+   scanf("%s",&formula);
+
+   printf("Enter the truth values of operands: ");
+    scanf("%s",&operand_val);
+
+   char finalans;
+   finalans = eval_formula(n,formula,operand_val);
+
+   printf("%c",finalans);
+   return 0;
+
+}
