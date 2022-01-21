@@ -1,1 +1,0 @@
-insert into tracktrigger.user (id, email, password, name, email_verified, is_user_complete, phone_number, phone_verified, profession, user_new) values (1, 'sonnathikanti@gmail.com', 'kanti', null, 1, 0, null, 0, 'student', 0);
